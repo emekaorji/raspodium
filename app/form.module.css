@@ -1,0 +1,19 @@
+.form {
+	width: min(35em + 5vw, 90%);
+	background-color: #ffffff66;
+	display: flex;
+	position: relative;
+	border-radius: 0.3em;
+}
+.textarea {
+	background-color: transparent;
+	padding-right: 3em;
+	border: 1px solid #00000020;
+	border-radius: 0.3em;
+}
+.iconButton {
+	position: absolute;
+	bottom: 0.65em;
+	right: 0.5em;
+	transform: rotate(90deg);
+}

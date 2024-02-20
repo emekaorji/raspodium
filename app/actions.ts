@@ -35,7 +35,7 @@ const WordSchema = z.object({
 		),
 	transliteration: z
 		.string()
-		.optional()
+		.nullish()
 		.describe('The transliteration of the word'),
 	speechPart: z
 		.string()
@@ -43,6 +43,8 @@ const WordSchema = z.object({
 			'The part of speech of the word or phrase e.g Noun, Adverb, Adjectival Clause, Adverbial Phrase etc.'
 		),
 });
+
+export type Word = z.infer<typeof WordSchema>;
 
 const WordsSchema = z.array(WordSchema);
 
@@ -60,12 +62,13 @@ Follow the following instructions accurately:
 - Provide a score on a scale of 1 to 100 indicating how grammatically similar the word is to the description
 - A word could be a Noun, Adjective, Adverb, Verb or any other part of speech
 - Indicate the type of the output term, whether it is a 'word' or 'phrase'
-- If it is a word, provide the transliteration of the word
+- If it is of type "word", make sure to provide the transliteration of the word
 `;
 
-type Words = z.infer<typeof WordsSchema>;
+export type Words = z.infer<typeof WordsSchema>;
 
 export type SubmitActionData = {
+	words?: Words;
 	error?: {
 		code: 'ERROR';
 		message: string;
@@ -75,7 +78,7 @@ export type SubmitActionData = {
 export async function submitAction(
 	_prevState: any,
 	formData: FormData
-): Promise<SubmitActionData | void> {
+): Promise<SubmitActionData | null> {
 	const desc = formData.get('desc') as string;
 	console.log(desc);
 
@@ -94,6 +97,7 @@ export async function submitAction(
 		console.log(words);
 
 		console.log('end');
+		return { words };
 	} catch (error: any) {
 		console.log(error);
 		return { error: { code: 'ERROR', message: error.message } };

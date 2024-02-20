@@ -1,23 +1,41 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
-import { submitAction } from './actions';
+import { useFormStatus } from 'react-dom';
 
-const Form = () => {
-	const [state, formAction] = useFormState(submitAction, {});
+import IconButton from '@/components/iconButton/iconButton';
+import RightArrowIcon from '@/components/icons/rightArrow';
+import Textarea from '@/components/textarea/textarea';
+
+import styles from './form.module.css';
+import { useState } from 'react';
+
+const Form = ({ formAction }: { formAction: (payload: FormData) => void }) => {
 	const { pending } = useFormStatus();
+
+	const [desc, setDesc] = useState('');
 
 	return (
 		<>
-			<form action={formAction}>
-				<input
-					name='desc'
+			<form
+				action={formAction}
+				onSubmit={() => setDesc('')}
+				className={styles.form}>
+				<Textarea
 					autoFocus
+					className={styles.textarea}
 					disabled={pending}
-					placeholder='Enter Description'
-					type='text'
+					name='desc'
+					value={desc}
+					onChange={(e) => setDesc(e.target.value)}
+					placeholder='Enter Description..'
 				/>
-				<button type='submit'>Submit</button>
+				<IconButton
+					className={styles.iconButton}
+					disabled={!desc}
+					title='Submit'
+					type='submit'>
+					<RightArrowIcon />
+				</IconButton>
 			</form>
 		</>
 	);
