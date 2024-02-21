@@ -1,0 +1,20 @@
+.button {
+  width: fit-content;
+  background-color: rgb(var(--foreground-rgb));
+  color: rgb(var(--background-start-rgb));
+  box-shadow: 0.1em 0.1em 0.5em #00000022;
+  display: inline-flex;
+  border-radius: 0.3em;
+  padding: 0.3em;
+}
+.button:hover {
+  background-color: rgb(var(--foreground-rgb), 0.8);
+}
+.button:disabled {
+  background-color: rgb(var(--foreground-rgb), 0.3);
+  color: rgb(var(--background-start-rgb), 0.5);
+  cursor: not-allowed;
+}
+.button:disabled:hover {
+  background-color: rgb(var(--foreground-rgb), 0.3);
+}

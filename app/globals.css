@@ -29,7 +29,6 @@ html,
 body {
   width: 100%;
   height: 100%;
-  overflow-x: hidden;
 }
 
 body {
@@ -45,7 +44,14 @@ body {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  overflow-y: auto;
+  overflow: auto;
+}
+
+nav {
+  padding-top: 1em;
+}
+nav h1 {
+  font-size: 6em;
 }
 
 a {
@@ -71,6 +77,14 @@ button, input, select, textarea {
   font-weight: inherit;
   border: none;
   border-radius: 0.3em;
+}
+
+::placeholder {
+  color: rgb(var(--foreground-rgb), 0.5);
+}
+
+button {
+  cursor: pointer;
 }
 
 img, svg {

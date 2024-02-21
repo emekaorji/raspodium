@@ -13,21 +13,24 @@ const Form = ({ formAction }: { formAction: (payload: FormData) => void }) => {
 	const { pending } = useFormStatus();
 
 	const [desc, setDesc] = useState('');
+	const [prompt, setPrompt] = useState('');
 
 	return (
 		<>
 			<form
 				action={formAction}
-				onSubmit={() => setDesc('')}
+				onSubmit={() => {
+					setPrompt(desc);
+					setDesc('');
+				}}
 				className={styles.form}>
 				<Textarea
 					autoFocus
-					className={styles.textarea}
 					disabled={pending}
 					name='desc'
 					value={desc}
 					onChange={(e) => setDesc(e.target.value)}
-					placeholder='Enter Description..'
+					placeholder='Enter an idea, thought or description..'
 				/>
 				<IconButton
 					className={styles.iconButton}
@@ -37,6 +40,7 @@ const Form = ({ formAction }: { formAction: (payload: FormData) => void }) => {
 					<RightArrowIcon />
 				</IconButton>
 			</form>
+			{prompt && <div className={styles.prompt}>Prompt: {prompt}</div>}
 		</>
 	);
 };

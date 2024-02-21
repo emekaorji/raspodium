@@ -1,9 +1,12 @@
 .main {
+  width: min(95%, 50em);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 6rem;
-  overflow-y: auto;
+  /* padding-top: 6rem; */
+}
+.main h1 {
+  text-align: center;
 }
 
 .center {

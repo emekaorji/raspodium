@@ -4,6 +4,12 @@
   flex-direction: column;
   gap: 1em;
 }
+.button {
+  align-self: center;
+}
+
+
+
 .card {
   width: 100%;
   background-color: #ffffff33;
@@ -35,4 +41,27 @@
 }
 .synonyms {
   display: inline;
+}
+
+
+
+.cardBuffer {
+  width: 100%;
+  height: 12em;
+  background-color: #ffffff33;
+  background-image: linear-gradient(143.5deg, transparent 35%, #ffffff66 50%, transparent 65%);
+  background-size: 200%;
+  background-position-x: 150%;
+  border-radius: 0.5em;
+  border: 1px solid rgb(var(--foreground-rgb), 0.1);
+  animation: wave 500ms ease-in-out 0s infinite normal forwards;
+}
+
+@keyframes wave {
+  from {
+    background-position-x: 150%;
+  }
+  to {
+    background-position-x: -50%;
+  }
 }
