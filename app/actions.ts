@@ -25,18 +25,19 @@ const WordSchema = z.object({
 				'Example sentence in which the word or phrase is used in context of the description'
 			)
 	),
-	meaning: z.array(
+	meanings: z.array(
 		z.string().describe('A brief or elaborate meaning of the word or phrase')
 	),
+	synonyms: z.array(z.string().describe('The synonyms of the word or phrase')),
 	score: z
-		.string()
+		.number()
 		.describe(
 			'A 1..100 score indicating how grammatically similar the word or phrase is to the original description'
 		),
-	transliteration: z
+	transcription: z
 		.string()
-		.nullish()
-		.describe('The transliteration of the word'),
+		.nullable()
+		.describe('The transcription of the word'),
 	speechPart: z
 		.string()
 		.describe(
@@ -62,7 +63,9 @@ Follow the following instructions accurately:
 - Provide a score on a scale of 1 to 100 indicating how grammatically similar the word is to the description
 - A word could be a Noun, Adjective, Adverb, Verb or any other part of speech
 - Indicate the type of the output term, whether it is a 'word' or 'phrase'
-- If it is of type "word", make sure to provide the transliteration of the word
+- If it is of type 'word', provide the transcription of the word
+- If it is of type 'phrase', don't provide a transcription of the phrase
+- If available, add up to 5 or less synonyms for each word or phrase
 `;
 
 export type Words = z.infer<typeof WordsSchema>;

@@ -26,7 +26,13 @@ export default function RootLayout({
 
 	return (
 		<html lang='en'>
-			<body className={inter.className}>{children}</body>
+			<body className={inter.className}>
+				{children}
+				<footer>
+					Made with 💙 by&nbsp;
+					<a href='https://github.com/emekaorji'>Emeka Orji</a>
+				</footer>
+			</body>
 		</html>
 	);
 }

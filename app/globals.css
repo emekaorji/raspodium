@@ -5,7 +5,7 @@
     "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
     "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
 
-  --foreground-rgb: 0, 0, 0;
+  --foreground-rgb: 0, 12, 50;
   --background-start-rgb: 214, 222, 245;
   --background-end-rgb: 214, 222, 245;
   
@@ -41,11 +41,27 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  overflow-y: auto;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2em 1em;
+  margin-top: auto;
+}
+footer a {
+  text-decoration: 1px solid underline;
 }
 
 button, input, select, textarea {
