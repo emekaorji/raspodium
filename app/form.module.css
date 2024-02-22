@@ -1,4 +1,11 @@
 .form {
+	width: 100%;
+  display: flex;
+  flex-direction: column;
+	align-items: center;
+  gap: 1em;
+}
+.label {
 	width: min(35em + 5vw, 90%);
 	display: flex;
 	position: relative;

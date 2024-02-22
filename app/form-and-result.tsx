@@ -13,9 +13,9 @@ const FormAndResult = () => {
 
 	return (
 		<>
-			<Form formAction={formAction} />
-			<br />
-			<Result words={state?.words} />
+			<Form formAction={formAction}>
+				<Result words={state?.words} />
+			</Form>
 		</>
 	);
 };

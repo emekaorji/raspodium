@@ -9,6 +9,7 @@ import {
 
 import getClassName from '@/utils/getClassName';
 import styles from './textarea.module.css';
+import { useFormStatus } from 'react-dom';
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 	containerClassName?: string;
