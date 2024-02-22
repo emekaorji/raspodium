@@ -4,10 +4,7 @@ import OpenAI from 'openai';
 import { ZodFunctionDef, toTool } from 'openai-zod-functions';
 import { z } from 'zod';
 import { headers } from 'next/headers';
-import { raspodiumDB } from '@/db';
-import { ips } from '@/db/schema';
-import getRandomId from '@/utils/getRandomId';
-import { eq } from 'drizzle-orm';
+import { isRateLimited, setupIpTracking } from './rate-limit';
 
 const ai = new OpenAI({
 	apiKey: process.env.OPEN_AI_KEY,
@@ -83,37 +80,16 @@ export type SubmitActionData = {
 	};
 };
 
-function isRateLimited(
-	calls: {
-		id: string;
-		timeStamp: number;
-	}[]
-): boolean {
-	return true;
-}
-
 export async function submitAction(
 	_prevState: any,
 	formData: FormData
 ): Promise<SubmitActionData | null> {
 	try {
 		const ip = headers().get('x-real-ip') ?? 'local';
-		console.log(ip);
-
-		const ipDetails = await raspodiumDB
-			.select()
-			.from(ips)
-			.where(eq(ips.ipAddress, ip))
-			.get();
-
-		if (ipDetails && isRateLimited(ipDetails.calls)) {
-			throw new Error('Too many requests, try again after 1hr');
-		}
+		const ipDetails = await isRateLimited(ip);
 
 		const desc = formData.get('desc') as string;
-		console.log(desc);
 
-		console.log('start');
 		const { words }: { words: Words } = await complete(prompt(desc), [
 			{
 				name: 'get_matching_words',
@@ -126,9 +102,7 @@ export async function submitAction(
 
 		console.log(words);
 
-		raspodiumDB
-			.insert(ips)
-			.values({ id: getRandomId(), calls: [], ipAddress: ip });
+		await setupIpTracking(ip, ipDetails);
 
 		return { words };
 	} catch (error: any) {
