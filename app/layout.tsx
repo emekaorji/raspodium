@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, Satisfy } from 'next/font/google';
 import './globals.css';
+import 'console-prod';
 
 const inter = Inter({ subsets: ['latin'] });
 const satisfy = Satisfy({ weight: '400', subsets: ['latin'] });
