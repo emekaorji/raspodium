@@ -1,0 +1,13 @@
+.form {
+	width: 100%;
+  display: flex;
+  flex-direction: column;
+	align-items: center;
+  gap: 1em;
+}
+
+
+.prompt {
+	font-size: 0.8em;
+	padding-top: 0.4em;
+}

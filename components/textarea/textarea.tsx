@@ -35,7 +35,8 @@ const Textarea = ({
 					onKeyDown={(e) => {
 						if (
 							(e.ctrlKey || e.metaKey) &&
-							(e.key === 'Enter' || e.key === 'NumpadEnter')
+							(e.key === 'Enter' || e.key === 'NumpadEnter') &&
+							(e.target as HTMLTextAreaElement).value
 						) {
 							e.preventDefault();
 							e.currentTarget.form?.requestSubmit();

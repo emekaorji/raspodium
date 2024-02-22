@@ -6,39 +6,8 @@ import IconButton from '@/components/iconButton/iconButton';
 import RightArrowIcon from '@/components/icons/rightArrow';
 import Textarea from '@/components/textarea/textarea';
 
-import styles from './form.module.css';
-import { ChangeEvent, ChangeEventHandler, ReactNode, useState } from 'react';
-
-interface FormProps {
-	children: ReactNode;
-	formAction: (payload: FormData) => void;
-}
-
-const Form = ({ children, formAction }: FormProps) => {
-	const [desc, setDesc] = useState('');
-	const [prompt, setPrompt] = useState('');
-
-	const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-		setDesc(event.target.value);
-	};
-
-	return (
-		<>
-			<form
-				action={formAction}
-				className={styles.form}
-				onSubmit={() => {
-					setPrompt(desc);
-					setDesc('');
-				}}>
-				<FormFields desc={desc} handleChange={handleChange} />
-				{prompt && <div className={styles.prompt}>Prompt: {prompt}</div>}
-				<br />
-				{children}
-			</form>
-		</>
-	);
-};
+import styles from './form-fields.module.css';
+import { ChangeEventHandler } from 'react';
 
 interface FormFieldsProps {
 	desc: string;
@@ -71,4 +40,4 @@ const FormFields = ({ desc, handleChange }: FormFieldsProps) => {
 	);
 };
 
-export default Form;
+export default FormFields;

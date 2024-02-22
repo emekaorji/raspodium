@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 
 import { Word, Words } from './actions';
@@ -9,87 +9,105 @@ import styles from './result.module.css';
 import getClassName from '@/utils/getClassName';
 import Button from '@/components/button/button';
 
-// const sampleWords: Words = [
-// 	{
-// 		id: '1',
-// 		word: 'panting',
-// 		type: 'word',
-// 		usage: ['She was panting heavily after the long run.'],
-// 		meanings: [
-// 			'the action of breathing with short, quick breaths, especially with difficulty',
-// 		],
-// 		synonyms: ['gasping', 'heaving', 'huffing'],
-// 		score: 90,
-// 		transcription: '\\',
-// 		speechPart: 'Verb',
-// 	},
-// 	{
-// 		id: '2',
-// 		word: 'huffing and puffing',
-// 		type: 'phrase',
-// 		usage: ['He was huffing and puffing after climbing up the steep hill.'],
-// 		meanings: [
-// 			'breathing heavily and noisily, especially through exertion or excitement',
-// 		],
-// 		synonyms: ['breathing heavily', 'panting', 'gasping'],
-// 		score: 95,
-// 		transcription: null,
-// 		speechPart: 'Phrase',
-// 	},
-// 	{
-// 		id: '3',
-// 		word: 'gasping',
-// 		type: 'word',
-// 		usage: ['She was gasping for air after running to catch the bus.'],
-// 		meanings: [
-// 			'breathe in quickly and with difficulty, typically as a result of exertion or surprise',
-// 		],
-// 		synonyms: ['panting', 'heaving', 'huffing'],
-// 		score: 85,
-// 		transcription: 'ˈɡæspɪŋ',
-// 		speechPart: 'Verb',
-// 	},
-// 	{
-// 		id: '4',
-// 		word: 'wheezing',
-// 		type: 'word',
-// 		usage: ['He was wheezing after a long, tiring day at work.'],
-// 		meanings: [
-// 			'breathe with a whistling or rattling sound in the chest, as a result of obstruction in the air passages',
-// 		],
-// 		synonyms: ['breathing heavily', 'panting', 'gasping'],
-// 		score: 80,
-// 		transcription: 'ˈwēz',
-// 		speechPart: 'Verb',
-// 	},
-// 	{
-// 		id: '5',
-// 		word: 'out of breath',
-// 		type: 'phrase',
-// 		usage: ['She was out of breath after climbing the stairs.'],
-// 		meanings: ['having difficulty breathing; breathless'],
-// 		synonyms: ['breathless', 'panting', 'gasping'],
-// 		score: 90,
-// 		transcription: null,
-// 		speechPart: 'Phrase',
-// 	},
-// ];
+const sampleWords: Words = [
+	{
+		id: 'a8be2yntc9',
+		word: 'rehearse',
+		type: 'word',
+		usage: [
+			'He had to rehearse his lines over and over again to get them right.',
+		],
+		meanings: ['to practice something by repeating it over and over'],
+		synonyms: ['practice', 'drill', 'recite', 'iterate'],
+		score: 90,
+		transcription: 'rɪˈhɜrs',
+		speechPart: 'verb',
+	},
+	{
+		id: '7dns38hdx5',
+		word: 'recapitulate',
+		type: 'word',
+		usage: [
+			'I had to recapitulate the key points of the meeting to remember them clearly.',
+		],
+		meanings: ['to summarize and repeat the main points'],
+		synonyms: ['summarize', 'review', 'restate', 'recite'],
+		score: 85,
+		transcription: 'ˌriːkəˈpɪtjəleɪt',
+		speechPart: 'verb',
+	},
+	{
+		id: 'f9s8h3n1dy',
+		word: 'constantly',
+		type: 'word',
+		usage: [
+			'She kept going over the instructions constantly to make sure she understood them.',
+		],
+		meanings: ['continuously, over and over again'],
+		synonyms: ['continuously', 'persistently', 'incessantly', 'repeatedly'],
+		score: 80,
+		transcription: 'ˈkɒnstəntli',
+		speechPart: 'adverb',
+	},
+	{
+		id: 'd28ng1n9kc',
+		word: 'regurgitate',
+		type: 'word',
+		usage: [
+			'Students often have to regurgitate information in exams without fully understanding it.',
+		],
+		meanings: ['to repeat something without fully understanding it'],
+		synonyms: ['repeat', 'parrot', 'recite', 'reproduce'],
+		score: 75,
+		transcription: 'rɪˈɡɜrdʒɪteɪt',
+		speechPart: 'verb',
+	},
+	{
+		id: '8d2n4kd95s',
+		word: 'parrot fashion',
+		type: 'phrase',
+		usage: [
+			"He learned the speech parrot fashion, but he didn't understand its meaning.",
+		],
+		meanings: ['to repeat something from memory without understanding it'],
+		score: 80,
+		synonyms: [],
+		transcription: '',
+		speechPart: 'adverb',
+	},
+];
 
-const Result = ({ words }: { words?: Words }) => {
+interface ResultProps {
+	words?: Words;
+	query?: string;
+}
+
+const Result = ({ words, query }: ResultProps) => {
 	const { pending } = useFormStatus();
 
 	console.log(pending);
 
 	const [results, setResults] = useState<Words>(words || []);
-	const [hasMore, setHasMore] = useState(true);
+	const numberOfCalls = useRef(0);
+	const search = useRef('');
 
 	useEffect(() => {
 		if (words) {
-			setResults(words);
-			// Once results is updated a second time, set hasMore to false
-			setHasMore(false);
+			setResults((prev) => {
+				const newWords = prev.concat(words);
+				return [...newWords];
+			});
+			numberOfCalls.current++;
 		}
 	}, [words]);
+
+	useEffect(() => {
+		if (search.current !== query) {
+			setResults([]);
+			numberOfCalls.current = 0;
+		}
+		search.current = query || '';
+	}, [query]);
 
 	return (
 		<>
@@ -107,8 +125,20 @@ const Result = ({ words }: { words?: Words }) => {
 				) : (
 					<></>
 				)}
-				{hasMore && results.length && (
-					<Button className={styles.button}>More+</Button>
+				{numberOfCalls.current < 2 && results.length ? (
+					<>
+						<input type='hidden' name='fetchMore-Query' defaultValue={query} />
+						<input
+							type='hidden'
+							name='fetchMore-Omit'
+							defaultValue={results.map((i) => i.word).join(', ')}
+						/>
+						<Button className={styles.button} disabled={pending} type='submit'>
+							More+
+						</Button>
+					</>
+				) : (
+					<></>
 				)}
 			</div>
 		</>

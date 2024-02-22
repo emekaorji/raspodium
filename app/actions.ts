@@ -68,6 +68,27 @@ Follow the following instructions accurately:
 - If it is of type 'word', provide the transcription of the word
 - If it is of type 'phrase', don't provide a transcription of the phrase
 - If available, add up to 5 or less synonyms for each word or phrase
+- Make sure the ID is unique and consist of random string characters
+`;
+const prompt2 = (desc: string, omit: string) => `
+give me 5 words or idiomatic phrases/clauses that match the following description:
+
+---
+${desc}
+---
+
+Follow the following instructions accurately:
+
+- Omit the following words/phrase: ${omit}. (Very important!)
+- Provide one or more dictionary meaning of the word or phrase
+- Provide one or more real world sentences usage where the words are used in context of the description
+- Provide a score on a scale of 1 to 100 indicating how grammatically similar the word is to the description
+- A word could be a Noun, Adjective, Adverb, Verb or any other part of speech
+- Indicate the type of the output term, whether it is a 'word' or 'phrase'
+- If it is of type 'word', provide the transcription of the word
+- If it is of type 'phrase', don't provide a transcription of the phrase
+- If available, add up to 5 or less synonyms for each word or phrase
+- Make sure the ID is unique and consist of random string characters
 `;
 
 export type Words = z.infer<typeof WordsSchema>;
@@ -89,18 +110,35 @@ export async function submitAction(
 		const ipDetails = await isRateLimited(ip);
 
 		const desc = formData.get('desc') as string;
+		const fetchMoreQuery = formData.get('fetchMore-Query') as string;
+		const fetchMoreOmit = formData.get('fetchMore-Omit') as string;
 
-		const { words }: { words: Words } = await complete(prompt(desc), [
-			{
-				name: 'get_matching_words',
-				description: 'Get words that match a description',
-				schema: z.object({
-					words: WordsSchema,
-				}),
-			},
-		]);
+		let words: Words = [];
 
-		console.log(words);
+		console.log(fetchMoreQuery, fetchMoreOmit, desc);
+		if (fetchMoreQuery && fetchMoreOmit) {
+			const response = await complete(prompt2(fetchMoreQuery, fetchMoreOmit), [
+				{
+					name: 'get_matching_words',
+					description: 'Get words that match a description',
+					schema: z.object({
+						words: WordsSchema,
+					}),
+				},
+			]);
+			words = response.words;
+		} else {
+			const response = await complete(prompt(desc), [
+				{
+					name: 'get_matching_words',
+					description: 'Get words that match a description',
+					schema: z.object({
+						words: WordsSchema,
+					}),
+				},
+			]);
+			words = response.words;
+		}
 
 		await setupIpTracking(ip, ipDetails);
 
