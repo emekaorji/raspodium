@@ -115,9 +115,7 @@ export async function submitAction(
 		const ip = headers().get('x-real-ip') ?? 'local';
 		const ipDetails = await isRateLimited(ip);
 
-		// const desc = formData.get('desc') as string;
-		const { desc, fetchMoreOmit, fetchMoreQuery } = formDataSchema.parse({
-			desc: formData.get('desc'),
+		const { fetchMoreOmit, fetchMoreQuery } = formDataSchema.parse({
 			fetchMoreOmit: formData.get('fetchMore-Query'),
 			fetchMoreQuery: formData.get('fetchMore-Omit'),
 		});
@@ -136,6 +134,9 @@ export async function submitAction(
 			]);
 			words = response.words;
 		} else {
+			const { desc } = formDataSchema.parse({
+				desc: formData.get('desc'),
+			});
 			const response = await complete(prompt(desc), [
 				{
 					name: 'get_matching_words',
