@@ -31,9 +31,15 @@ const FormAndResult = () => {
 				action={formAction}
 				className={styles.form}
 				onSubmit={(e) => {
-					if (desc) setPrompt(desc);
-					setDesc('');
+					/* -------------------------------------------- *
+					 * For some reason, this block is really important
+					 * for `useFormStatus` hook to work as expected
+					 * -------------------------------------------- */
 					e.persist();
+					if (desc) setPrompt(desc);
+					setTimeout(() => {
+						setDesc('');
+					}, 0);
 				}}>
 				<Toaster
 					position='top-right'

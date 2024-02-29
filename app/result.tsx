@@ -1,6 +1,6 @@
 'use client';
 
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 
 import { Word, Words } from './actions';
@@ -83,9 +83,7 @@ interface ResultProps {
 }
 
 const Result = ({ words, query }: ResultProps) => {
-	const { pending } = useFormStatus();
-
-	console.log(pending);
+	const { pending, ...p } = useFormStatus();
 
 	const [results, setResults] = useState<Words>(words || []);
 	const numberOfCalls = useRef(0);

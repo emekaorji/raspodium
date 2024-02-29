@@ -15,6 +15,8 @@ export interface IPDetails {
 export async function isRateLimited(
 	ip: string
 ): Promise<IPDetails | undefined> {
+	if (ip === 'local') return;
+
 	const ipDetails = await raspodiumDB
 		.select()
 		.from(ips)
@@ -44,6 +46,8 @@ export async function isRateLimited(
 }
 
 export async function setupIpTracking(ip: string, ipDetails?: IPDetails) {
+	if (ip === 'local') return;
+
 	const newCall = { id: getRandomId(), timeStamp: new Date().getTime() };
 
 	if (ipDetails) {
