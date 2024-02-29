@@ -10,8 +10,6 @@ import styles from './form-and-result.module.css';
 const FormAndResult = () => {
 	const [state, formAction] = useFormState(submitAction, null);
 
-	console.log(state?.words);
-
 	const [desc, setDesc] = useState('');
 	const [prompt, setPrompt] = useState('');
 
@@ -30,9 +28,10 @@ const FormAndResult = () => {
 			<form
 				action={formAction}
 				className={styles.form}
-				onSubmit={() => {
+				onSubmit={(e) => {
 					if (desc) setPrompt(desc);
 					setDesc('');
+					e.persist();
 				}}>
 				<FormFields desc={desc} handleChange={handleChange} />
 				{prompt && <div className={styles.prompt}>Prompt: {prompt}</div>}
