@@ -102,7 +102,7 @@ export type SubmitActionData = {
 };
 
 const formDataSchema = z.object({
-	desc: z.string().min(1),
+	desc: z.string(),
 	fetchMoreQuery: z.string().nullish(),
 	fetchMoreOmit: z.string().nullish(),
 });
@@ -115,7 +115,8 @@ export async function submitAction(
 		const ip = headers().get('x-real-ip') ?? 'local';
 		const ipDetails = await isRateLimited(ip);
 
-		const { fetchMoreOmit, fetchMoreQuery } = formDataSchema.parse({
+		const { desc, fetchMoreOmit, fetchMoreQuery } = formDataSchema.parse({
+			desc: formData.get('desc') || '',
 			fetchMoreOmit: formData.get('fetchMore-Query'),
 			fetchMoreQuery: formData.get('fetchMore-Omit'),
 		});
@@ -134,9 +135,6 @@ export async function submitAction(
 			]);
 			words = response.words;
 		} else {
-			const { desc } = formDataSchema.parse({
-				desc: formData.get('desc'),
-			});
 			const response = await complete(prompt(desc), [
 				{
 					name: 'get_matching_words',
