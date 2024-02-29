@@ -1,6 +1,6 @@
 import { createClient } from '@libsql/client';
 
 export const client = createClient({
-	url: process.env.DATABASE_URL!,
-	authToken: process.env.DATABASE_AUTH_TOKEN,
+	url: process.env.TURSO_DATABASE_URL!,
+	authToken: process.env.TURSO_DATABASE_AUTH_TOKEN,
 });
