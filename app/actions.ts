@@ -2,7 +2,7 @@
 
 import OpenAI from 'openai';
 import { ZodFunctionDef, toTool } from 'openai-zod-functions';
-import { z } from 'zod';
+import { ZodError, z } from 'zod';
 import { headers } from 'next/headers';
 import { isRateLimited, setupIpTracking } from './rate-limit';
 
@@ -96,10 +96,16 @@ export type Words = z.infer<typeof WordsSchema>;
 export type SubmitActionData = {
 	words?: Words;
 	error?: {
-		code: 'ERROR';
+		code: 'ERROR' | 'ZOD_ERROR' | 'UNKNOWN_ERROR';
 		message: string;
 	};
 };
+
+const formDataSchema = z.object({
+	desc: z.string().min(1),
+	fetchMoreQuery: z.string().nullish(),
+	fetchMoreOmit: z.string().nullish(),
+});
 
 export async function submitAction(
 	_prevState: any,
@@ -109,13 +115,15 @@ export async function submitAction(
 		const ip = headers().get('x-real-ip') ?? 'local';
 		const ipDetails = await isRateLimited(ip);
 
-		const desc = formData.get('desc') as string;
-		const fetchMoreQuery = formData.get('fetchMore-Query') as string;
-		const fetchMoreOmit = formData.get('fetchMore-Omit') as string;
+		// const desc = formData.get('desc') as string;
+		const { desc, fetchMoreOmit, fetchMoreQuery } = formDataSchema.parse({
+			desc: formData.get('desc'),
+			fetchMoreOmit: formData.get('fetchMore-Query'),
+			fetchMoreQuery: formData.get('fetchMore-Omit'),
+		});
 
 		let words: Words = [];
 
-		console.log(fetchMoreQuery, fetchMoreOmit, desc);
 		if (fetchMoreQuery && fetchMoreOmit) {
 			const response = await complete(prompt2(fetchMoreQuery, fetchMoreOmit), [
 				{
@@ -145,7 +153,19 @@ export async function submitAction(
 		return { words };
 	} catch (error: any) {
 		console.log(error);
-		return { error: { code: 'ERROR', message: error.message } };
+
+		if (error instanceof ZodError) {
+			return { error: { code: 'ZOD_ERROR', message: error.errors[0].message } };
+		} else if (error instanceof Error) {
+			return { error: { code: 'ERROR', message: error.message } };
+		} else {
+			return {
+				error: {
+					code: 'UNKNOWN_ERROR',
+					message: `An unknown error occurred: ${error}`,
+				},
+			};
+		}
 	}
 }
 

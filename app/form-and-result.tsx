@@ -1,8 +1,10 @@
 'use client';
 
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import Result from './result';
+import { Toaster, toast } from 'sonner';
 import { useFormState } from 'react-dom';
+
+import Result from './result';
 import { submitAction } from './actions';
 import FormFields from './form-fields';
 import styles from './form-and-result.module.css';
@@ -19,7 +21,7 @@ const FormAndResult = () => {
 
 	useEffect(() => {
 		if (state?.error) {
-			alert(state?.error.message);
+			toast(state.error.message);
 		}
 	}, [state?.error]);
 
@@ -33,6 +35,12 @@ const FormAndResult = () => {
 					setDesc('');
 					e.persist();
 				}}>
+				<Toaster
+					position='top-right'
+					richColors
+					closeButton
+					toastOptions={{ style: { backgroundColor: '#ffffffdd' } }}
+				/>
 				<FormFields desc={desc} handleChange={handleChange} />
 				{prompt && <div className={styles.prompt}>Prompt: {prompt}</div>}
 				<br />
